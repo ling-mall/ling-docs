@@ -1,0 +1,62 @@
+[
+  {
+    "name": "规范",
+    "children": [
+      {
+        "name": "Java",
+        "to": "/规范/Java",
+        "type": "md"
+      },
+      {
+        "name": "Vue",
+        "to": "/规范/Vue",
+        "type": "md"
+      },
+      {
+        "name": "Git 提交信息规范",
+        "to": "/规范/Git 提交信息规范",
+        "type": "md"
+      },
+      {
+        "name": "Git 协作开发流程与规范",
+        "to": "/规范/Git 协作开发流程与规范",
+        "type": "md"
+      },
+      {
+        "name": "中文文档排版规范",
+        "to": "/规范/中文文档排版规范",
+        "type": "md"
+      },
+      {
+        "name": "README 文件规范",
+        "to": "/README 文件规范",
+        "type": "md"
+      }
+    ]
+  },
+  {
+    "name": "速查文档",
+    "children": [
+      {
+        "name": "正则表达式",
+        "to": "/速查文档/正则表达式",
+        "type": "md"
+      },
+      {
+        "name": "Git 常用命令",
+        "to": "/速查文档/Git 常用命令",
+        "type": "md"
+      }
+    ]
+  },
+  {
+    "name": "其他",
+    "children": [
+      {
+        "name": "参与贡献",
+        "to": "/其他/参与贡献",
+        "type": "md"
+      }
+    ]
+  }
+]
