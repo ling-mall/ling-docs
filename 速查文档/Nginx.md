@@ -1225,3 +1225,89 @@ server {
     root         /share/fs;
 }
 ```
+
+## 反向代理实例
+
+```config
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    server {
+        listen       80;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html;
+        }
+
+        location ^~ /adminApi/ {
+            proxy_pass http://localhost:8080/; 
+            proxy_set_header Host $host; 
+            proxy_set_header X-Real-IP $remote_addr; 
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+            proxy_set_header REMOTE-HOST $remote_addr; 
+            proxy_set_header Upgrade $http_upgrade; 
+            proxy_set_header Connection "upgrade"; 
+            proxy_set_header X-Forwarded-Proto $scheme; 
+            proxy_http_version 1.1; 
+            add_header Cache-Control no-cache; 
+        }
+    }
+}
+```
+
+## websocket
+
+```config
+http {
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
+    server {
+        ...
+
+        location /chat/ {
+            proxy_pass http://backend;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+        }
+    }
+}
+```
+
+还可以直接加 `proxy_set_header Connection $connection_upgrade;` 到后端的反向代理里，匹配路径的websocket就可以被代理了
+
+```config
+http {
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
+    server {
+        location ^~ /adminApi/ {
+            proxy_pass http://localhost:8080/; 
+            proxy_set_header Host $host; 
+            proxy_set_header X-Real-IP $remote_addr; 
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+            proxy_set_header REMOTE-HOST $remote_addr; 
+            proxy_set_header Upgrade $http_upgrade; 
+            proxy_set_header Connection "upgrade"; 
+            proxy_set_header X-Forwarded-Proto $scheme; 
+            proxy_http_version 1.1; 
+            add_header Cache-Control no-cache; 
+            # 这里加一行
+            proxy_set_header Connection $connection_upgrade;
+        }
+    }
+}
+```
