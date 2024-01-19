@@ -351,7 +351,57 @@ runtimeService.startProcessInstanceByKey("MyProcess");
 - 在所有已部署的流程定义中，消息启动事件的名字必须是唯一的。如果在流程定义中，一个或多个消息启动事件引用了已经部署的另一流程定义中消息启动事件的消息名，则Flowable会在部署这个流程定义时抛出异常。
 - 在部署流程定义的新版本时，会取消上一版本的消息订阅，即使新版本中并没有这个消息事件。
 
+相关API
+
+```java
+    ProcessInstance startProcessInstanceByMessage(String messageName);
+    ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey);
+    ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables);
+    ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey,Map<String, Object> processVariables);
+```
+
 ###### 信号启动事件
+
+信号启动事件允许在接收到特定信号时自动启动或继续执行流程。
+
+>**消息与信号的区别：消息是一对一的，一个消息只能启动一个流程事件。信号是全局的，广播式的，一个信号可以启动多个流程事件。**
+
+xml 示例
+
+```xml
+<signal id="theSignal" name="The Signal" />
+
+<process id="processWithSignalStart1">
+  <startEvent id="theStart">
+    <signalEventDefinition id="theSignalEventDefinition" signalRef="theSignal"  />
+  </startEvent>
+  <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+  <userTask id="theTask" name="Task in process A" />
+  <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+  <endEvent id="theEnd" />
+</process>
+```
+
+发送信号API
+
+```java
+void signalEventReceived(String signalName);
+void signalEventReceived(String signalName, Map<String, Object> processVariables);
+void signalEventReceived(String signalName, String executionId);
+void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
+```
+
+###### 异常启动事件
+
+异常启动事件文章：<https://bbs.huaweicloud.com/blogs/345385>
+
+异常启动事件（error start event），可用于触发事件子流程（Event Sub-Process）。**异常启动事件不能用于启动流程实例**。
+
+```xml
+<startEvent id="messageStart" >
+  <errorEventDefinition errorRef="someError" />
+</startEvent>
+```
 
 ## 操作
 
